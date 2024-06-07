@@ -1,5 +1,6 @@
 package com.example.broadcastreceiverdemo
 
+import android.content.IntentFilter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +15,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.broadcastreceiverdemo.ui.theme.BroadcastReceiverDemoTheme
 
 class MainActivity : ComponentActivity() {
+    companion object {
+        private lateinit var timeChangedReceiver: TimeChangedReceiver
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -27,6 +32,16 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("android.intent.action.TIME_TICK")
+        timeChangedReceiver = TimeChangedReceiver()
+        registerReceiver(timeChangedReceiver, intentFilter)
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(timeChangedReceiver)
+        super.onDestroy()
     }
 }
 
